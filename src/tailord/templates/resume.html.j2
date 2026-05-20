@@ -1,0 +1,175 @@
+<!doctype html>
+{#-
+  Resume template.
+
+  Variables provided by the renderer:
+    - profile, experience, projects, skills, education : dicts from master.yaml
+      (already filtered by the variant)
+    - variant      : the variant dict (name, mode, page_format, ...)
+    - section_order: list[str], ordering of sections
+    - css          : str, the inlined CSS (so the file is fully self-contained)
+    - preview      : bool, true when served by the dev preview server
+
+  Custom Jinja filters:
+    - md_inline : converts **bold** to <strong>bold</strong> (and only that)
+
+  Macros below are deliberately small so agents can read the whole template top
+  to bottom. Do not add new abstractions unless rendering would otherwise repeat.
+-#}
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>{{ profile.name }} — {{ variant.display_name | default('Resume') }}</title>
+<style>{{ css | safe }}</style>
+{%- if preview %}
+<script>
+  // Dev-preview live reload: poll /_hash, reload if it changes.
+  (function () {
+    let last = null;
+    setInterval(async () => {
+      try {
+        const r = await fetch('/_hash', { cache: 'no-store' });
+        const h = await r.text();
+        if (last !== null && h !== last) location.reload();
+        last = h;
+      } catch (_) { /* server restarting */ }
+    }, 500);
+  })();
+</script>
+{%- endif %}
+</head>
+<body class="mode-{{ variant.mode | default('normal') }}">
+
+<main class="resume">
+
+  {#- ===== HEADER (profile) ===== #}
+  {%- macro section_header(label) -%}
+  <h2 class="section-title">{{ label }}</h2>
+  {%- endmacro %}
+
+  {#- Two-row header: pair primary content (company / dates) on row 1 and
+      secondary content (role / location) on row 2 so both sides of the
+      header have content on every line — no asymmetric whitespace. -#}
+  {%- macro role_header(left_title, left_subtitle, right_top, right_bottom) -%}
+  <header class="entry-header">
+    <div class="entry-row entry-row-primary">
+      <span class="entry-title">{{ left_title }}</span>
+      {%- if right_bottom %}<span class="entry-dates">{{ right_bottom }}</span>{% endif %}
+    </div>
+    {%- if left_subtitle or right_top %}
+    <div class="entry-row entry-row-secondary">
+      {%- if left_subtitle %}<span class="entry-subtitle">{{ left_subtitle }}</span>{% else %}<span></span>{% endif %}
+      {%- if right_top %}<span class="entry-meta">{{ right_top }}</span>{% endif %}
+    </div>
+    {%- endif %}
+  </header>
+  {%- endmacro %}
+
+  {%- macro bullet_list(bullets) -%}
+  {%- if bullets %}
+  <ul class="bullets">
+    {%- for b in bullets %}
+    <li data-bullet-id="{{ b.id }}">{{ b.text | md_inline | safe }}</li>
+    {%- endfor %}
+  </ul>
+  {%- endif -%}
+  {%- endmacro %}
+
+  <header class="profile">
+    <h1 class="profile-name">{{ profile.name }}</h1>
+    <p class="profile-contact">
+      {%- set parts = [] -%}
+      {%- if profile.get('location') %}{% set _ = parts.append(profile['location']) %}{% endif -%}
+      {%- if profile.get('phone') %}{% set _ = parts.append('<a href="tel:' ~ profile['phone'] | replace(' ', '') ~ '">' ~ profile['phone'] ~ '</a>') %}{% endif -%}
+      {%- if profile.get('email') %}{% set _ = parts.append('<a href="mailto:' ~ profile['email'] ~ '">' ~ profile['email'] ~ '</a>') %}{% endif -%}
+      {%- for link in profile.get('links') or [] -%}
+        {%- set link_text = link.get('display') or link.get('label') or link.get('url') -%}
+        {%- set _ = parts.append('<a href="' ~ link.url ~ '">' ~ link_text ~ '</a>') -%}
+      {%- endfor -%}
+      {{ parts | join(' &nbsp;·&nbsp; ') | safe }}
+    </p>
+    {%- if profile.get('summary') %}
+    <p class="profile-summary">{{ profile['summary'] | md_inline | safe }}</p>
+    {%- endif %}
+  </header>
+
+  {%- for section in section_order %}
+
+    {%- if section == 'experience' and experience %}
+    <section class="experience">
+      {{ section_header('Experience') }}
+      {%- for job in experience %}
+      {%- set job_dates = (job.get('start') ~ ' – ' ~ job.get('end')) if job.get('start') and job.get('end') else (job.get('start') or job.get('end')) -%}
+      <article class="entry role-block">
+        {{ role_header(
+            job.get('company'),
+            job.get('role'),
+            job.get('location'),
+            job_dates
+        ) }}
+        {{ bullet_list(job.get('bullets')) }}
+      </article>
+      {%- endfor %}
+    </section>
+    {%- endif %}
+
+    {%- if section == 'projects' and projects %}
+    <section class="projects">
+      {{ section_header('Projects') }}
+      {%- for p in projects %}
+      {%- set project_dates = (p.get('start') ~ ' – ' ~ p.get('end')) if p.get('start') and p.get('end') else (p.get('start') or p.get('end')) -%}
+      <article class="entry project-block">
+        {{ role_header(
+            p.get('name'),
+            p.get('subtitle'),
+            p.get('url'),
+            project_dates
+        ) }}
+        {{ bullet_list(p.get('bullets')) }}
+      </article>
+      {%- endfor %}
+    </section>
+    {%- endif %}
+
+    {%- if section == 'skills' and skills %}
+    <section class="skills">
+      {{ section_header('Skills') }}
+      <dl class="skill-list">
+        {%- for group in skills %}
+        <div class="skill-row">
+          <dt>{{ group.get('category') }}:</dt>
+          <dd>{{ group.get('items') | join(', ') }}</dd>
+        </div>
+        {%- endfor %}
+      </dl>
+    </section>
+    {%- endif %}
+
+    {%- if section == 'education' and education %}
+    <section class="education">
+      {{ section_header('Education') }}
+      {%- for edu in education %}
+      {%- set edu_dates = (edu.get('start') ~ ' – ' ~ edu.get('end')) if edu.get('start') and edu.get('end') else (edu.get('start') or edu.get('end')) -%}
+      <article class="entry education-block">
+        {{ role_header(
+            edu.get('institution'),
+            edu.get('degree'),
+            edu.get('location'),
+            edu_dates
+        ) }}
+        {%- if edu.get('details') %}
+        <p class="entry-details">{{ edu['details'] | join(' &nbsp;·&nbsp; ') | safe }}</p>
+        {%- endif %}
+        {%- if edu.get('coursework') %}
+        <p class="entry-coursework"><span class="label">Relevant Coursework:</span> {{ edu['coursework'] | join('; ') }}</p>
+        {%- endif %}
+      </article>
+      {%- endfor %}
+    </section>
+    {%- endif %}
+
+  {%- endfor %}
+
+</main>
+</body>
+</html>

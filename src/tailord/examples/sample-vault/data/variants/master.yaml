@@ -1,0 +1,17 @@
+name: master
+display_name: Master Resume
+output_filename: jane_doe_master
+page_format: Letter
+mode: normal
+
+include_tags: []
+exclude_tags: []
+max_bullets_per_role: null
+max_bullets_per_project: null
+
+section_order:
+  - profile
+  - experience
+  - projects
+  - skills
+  - education

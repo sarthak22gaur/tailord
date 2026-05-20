@@ -1,0 +1,33 @@
+name: startup
+display_name: Cover Letter — Startup Generalist
+output_filename: jane_doe_cover_letter_startup
+page_format: Letter
+
+recipient:
+  team: Engineering Team
+  company: ""
+  role: ""
+
+sections:
+  opening_hook: |
+    I'm a pragmatic full-stack engineer who has owned billing, on-call
+    rotations, and greenfield platform work. The scope range from
+    "ship a CRUD endpoint by Friday" to "design a workflow engine that
+    runs production for two years" is exactly the surface area I like.
+
+  why_them: |
+    Early-stage teams that wear scope changes well — and that hire senior
+    engineers because they want judgment, not just throughput — are the
+    ones I do my best work at. I want a place where the next six months'
+    plan changes in month two and that's treated as fine.
+
+  why_me: |
+    At Acme Labs I designed a distributed workflow engine running 40+
+    production pipelines, mentored two engineers through promotion, and
+    built the event bus and observability stack underneath. Earlier at
+    Globex I owned metered billing end-to-end, including the legal-team
+    invariants after a prior accounting bug.
+
+  closing: |
+    Happy to talk about what the next year looks like and where you'd
+    want a senior generalist to land.

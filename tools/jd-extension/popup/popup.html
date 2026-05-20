@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <main class="popup-shell">
+    <header class="topbar">
+      <div class="brand">
+        <strong>tailord</strong>
+        <span id="status" class="bridge-status">...</span>
+      </div>
+      <a href="#" id="open-options" class="settings-link">Settings</a>
+    </header>
+
+    <button id="queue" class="primary">Queue job</button>
+    <div id="message" class="message" hidden></div>
+
+    <section class="list-section" aria-labelledby="recent-heading">
+      <div class="section-heading">
+        <h3 id="recent-heading">Recent</h3>
+        <span id="inflight" class="section-count"></span>
+      </div>
+      <ul id="jobs" class="jobs"></ul>
+    </section>
+  </main>
+
+  <script src="../shared/browser-api.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

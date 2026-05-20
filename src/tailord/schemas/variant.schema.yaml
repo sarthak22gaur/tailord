@@ -1,0 +1,88 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "https://tailord.dev/schemas/variant.schema.yaml"
+title: variant
+description: >-
+  A resume variant — selects/filters bullets from master.yaml. Static variants
+  use tag-based filtering; job-specific variants may additionally use explicit
+  bullet selection, overrides, and extras.
+type: object
+additionalProperties: false
+required: [name]
+properties:
+  name: { type: string, minLength: 1 }
+  display_name: { type: string }
+  output_filename: { type: string }
+  page_format:
+    type: string
+    enum: [Letter, A4, Legal]
+  mode:
+    type: string
+    enum: [normal, compact]
+  summary: { type: string }
+  include_tags:
+    type: array
+    items: { type: string }
+  exclude_tags:
+    type: array
+    items: { type: string }
+  max_bullets_per_role: { type: [integer, "null"], minimum: 0 }
+  max_bullets_per_project: { type: [integer, "null"], minimum: 0 }
+  min_bullets_per_role: { type: integer, minimum: 0 }
+  min_bullets_per_project: { type: integer, minimum: 0 }
+  section_order:
+    type: array
+    items:
+      type: string
+      enum: [profile, summary, experience, projects, skills, education]
+  bullet_select:
+    type: object
+    description: "role_id or project_id → ordered list of bullet ids to keep."
+    additionalProperties:
+      type: array
+      items: { type: string }
+  bullet_overrides:
+    type: object
+    description: "bullet_id → replacement text (keeps tags/priority)."
+    additionalProperties: { type: string }
+  extra_bullets:
+    type: object
+    description: "role_id or project_id → bullets injected on top of master."
+    additionalProperties:
+      type: array
+      items:
+        type: object
+        required: [id, text]
+        additionalProperties: false
+        properties:
+          id: { type: string, pattern: "^[a-z][a-z0-9_]*$" }
+          text: { type: string, minLength: 10 }
+          tags: { type: array, items: { type: string } }
+          priority: { type: integer }
+          impact: { type: string, enum: [high, medium, low] }
+          categories: { type: array, items: { type: string } }
+          pinned: { type: boolean }
+          source:
+            description: >-
+              Pointer to the evidence-corpus doc this bullet was derived
+              from. Object form (preferred) is what resume-tailoring writes;
+              the short string form is accepted for compactness.
+            oneOf:
+              - type: string
+              - type: object
+                additionalProperties: false
+                required: [file]
+                properties:
+                  file: { type: string }
+                  heading: { type: string }
+                  line: { type: integer }
+  skills_override:
+    type: array
+    items:
+      type: object
+      required: [category, items]
+      additionalProperties: false
+      properties:
+        category: { type: string }
+        items:
+          type: array
+          items: { type: string }

@@ -1,0 +1,206 @@
+---
+name: resume-tailoring
+description: Tailor the resume in this repo for a specific job description. Produces a job-specific variant YAML and notes file under jobs/generated/<slug>/, then renders the PDF using existing make targets. Use this whenever the user pastes a JD or asks to apply to a role.
+---
+
+# Resume tailoring
+
+You are tailoring a resume for a specific job description. The repo is a
+static renderer + a YAML data model — you are responsible for the reasoning,
+the renderer handles the layout.
+
+## Inputs you should expect
+
+- A job description, either as raw text in chat or a file under
+  `jobs/inputs/`.
+- (Optional) A company URL or short company brief. If you have it, use it;
+  if you don't, do not invent one.
+
+## Vault content you should read
+
+- `data/user-preferences.yaml` — work-authorization gate, target/anti-target
+  role families, evidence corpus path. **Read this every time.**
+- `data/master.yaml` — canonical resume content. Every bullet has a stable
+  id, tags, priority, impact. **Prefer these.**
+- `data/variants/*.yaml` — static variants (master and any preset slugs).
+  Useful as starting points; do not modify them unless the user asks.
+- `${user-preferences.evidence_corpus_dir}/*.md` — long-form research about
+  the candidate's actual projects. Trusted evidence. See
+  `skills/resume-evidence-review/SKILL.md` for how to use.
+- `templates/resume.*` and `scripts/*` — the renderer. **Do not modify.**
+
+## What you produce
+
+Create one folder under `jobs/generated/<company-role>/` containing:
+
+```
+jobs/generated/<company-role>/
+├── notes.md      # your analysis, why you chose what you chose, risks
+├── variant.yaml  # the tailored variant the renderer consumes
+└── resume.pdf    # produced by `make build-job`
+```
+
+Pick a short, kebab-case slug for the folder: `acme-platform-eng`,
+`stripe-infra-l5`, `openai-applied-eng`. Include the company and the role.
+
+## Step-by-step
+
+### Step 0 — Evaluation context
+
+For bridge-driven jobs, `resume-job-fit-evaluator` has already run and the
+user has explicitly requested generation after seeing the evaluation. Do not
+block artifact generation solely because of sponsorship or authorization
+language at this stage; treat the request as a human override.
+
+Still read `data/user-preferences.yaml` and scan the JD for work-authorization
+language. Surface the finding in `notes.md` under "Risks":
+
+- **Explicit yes** — note the sponsor-friendly language.
+- **Explicit no** — quote the relevant line and write that this is a likely
+  application blocker, but continue if generation was explicitly requested.
+- **Silent or ambiguous** — record *"Work authorization: not mentioned in JD —
+  confirm with the company before applying."*
+
+If the user invokes this skill directly with no prior evaluation and the JD has
+an explicit authorization blocker, pause and ask before doing deep tailoring.
+
+### Step 1 onward
+
+1. **Read the JD.** Identify:
+   - Role narrative: what is this team *actually* solving? Not what keywords
+     the JD shoves in.
+   - Hard requirements (years, languages, must-have systems).
+   - Differentiating preferences (nice-to-haves that signal what would stand
+     out to the hiring manager).
+2. **Read the canonical data.** Open `data/master.yaml`. Note bullets whose
+   tags overlap the JD's themes. Note bullets that are strong but won't
+   resonate for this role — they will be cut.
+3. **Decide whether to consult the evidence corpus.** If the canonical
+   bullets cover the JD well, you may not need it. If the JD asks for
+   something the canonical bullets gloss over, open the relevant files
+   under `${user-preferences.evidence_corpus_dir}/` and follow
+   `resume-evidence-review` to pull evidence-backed rewrites or additions.
+4. **Draft `variant.yaml`.** See "Variant schema" below. Prefer:
+   - `bullet_select` per role to pick exact canonical bullet ids in order.
+   - `bullet_overrides` to rewrite text of an existing bullet (must stay
+     factually equivalent — see `resume-bullet-writing` and
+     `resume-evidence-review`).
+   - `extra_bullets` only when you need something canonical doesn't cover,
+     and only with a `source:` pointing to the evidence doc you drew from.
+5. **Write `notes.md`.** Cover: JD analysis, the bullets you kept / dropped
+   / rewrote, what evidence you consulted, what risks remain. Format below.
+6. **Render.** `make build-job JOB=jobs/generated/<slug>/variant.yaml`.
+   Open the PDF and sanity-check the layout (it should be one page; if it
+   spills, set `mode: compact` or trim a bullet).
+7. **Report back.** Tell the user what you produced, summarize the choices
+   in 2–3 sentences, and offer to iterate.
+
+## Variant schema (job-specific)
+
+```yaml
+name: acme-platform-eng              # matches the folder slug
+display_name: Acme — Senior Platform Engineer
+output_filename: resume               # → resume.pdf in the same folder
+page_format: Letter                   # or A4
+mode: normal                          # or compact if one page is tight
+
+# Optional one-paragraph summary above experience. Use sparingly — recruiters
+# skim it. Make it role-specific, not generic.
+summary: >
+  Senior software engineer focused on distributed data pipelines and
+  workflow orchestration; built and operates …
+
+# Pick exact bullets per role/project. Order matters — first is strongest.
+# Role IDs come from data/master.yaml `experience[].id`. Project IDs come
+# from `projects[].id`. Omit a role to drop it from the resume entirely.
+bullet_select:
+  <role_id>:
+    - <bullet_id>
+    - <bullet_id>
+    - <derived_bullet_id>       # ← defined in extra_bullets below
+
+# Rewrite specific canonical bullets. Stays linked to the master id so the
+# tag metadata is preserved. Stay factually equivalent to the source.
+bullet_overrides:
+  <bullet_id>: >
+    <new bullet text>
+
+# Inject net-new bullets that aren't in master.yaml. Always cite the
+# evidence doc + heading the bullet is derived from.
+extra_bullets:
+  <role_id>:
+    - id: <derived_bullet_id>
+      priority: 95
+      tags: [platform, distributed, architecture]
+      source:
+        file: <path under evidence_corpus_dir>
+        heading: <section heading from that doc>
+      text: >-
+        <bullet text>
+
+# Optional: reorder/replace the skills section. If omitted, master skills
+# are used. Use the same shape as master.skills.
+skills_override:
+  - category: Languages
+    items: [Python, TypeScript, Go, SQL]
+
+# Section order. Drop sections you don't want by omitting them.
+section_order: [profile, experience, projects, skills, education]
+```
+
+## notes.md format
+
+Keep it short but specific. The user (and future-you) reads this to
+understand the choices.
+
+```markdown
+# <Company> — <Role>
+
+**JD source:** jobs/inputs/<slug>.md (or pasted in chat <YYYY-MM-DD>)
+
+## Role narrative
+1–3 sentences on what this team is actually building and what would impress
+the hiring manager. Avoid restating the JD's bullet points.
+
+## Selection rationale
+- **Kept**: <bullet_id>, <bullet_id>, … — <why>.
+- **Dropped**: <bullet_id>, … — <why>.
+- **Rewrote**: <bullet_id> — <how the rewrite differs>.
+- **Added (derived)**: <bullet_id> — JD specifically calls out <topic>;
+  sourced from <evidence doc § heading>.
+
+## Evidence consulted
+- <path> — <what for>.
+
+## Risks / open questions
+- <confidence label for any derived bullets>.
+- <metrics or claims to confirm with the user before sending>.
+```
+
+## Hard rules
+
+- **Never modify** `data/master.yaml`, `data/variants/*`,
+  `data/user-preferences.yaml`, `templates/*`, or `scripts/*` while tailoring.
+  If the canonical data needs a real change, ask the user.
+- **Never invent** metrics, technologies, company names, product names,
+  team sizes, or outcomes. If the JD wants something the candidate hasn't
+  done, leave it off — don't fabricate.
+- **Naming.** Use the external-facing project names defined in
+  `master.yaml`. If the evidence corpus uses internal codenames, see
+  `resume-evidence-review` for the redaction map.
+- **One page** by default. If your draft spills, drop a weak bullet or set
+  `mode: compact` rather than shrinking the font further by hand.
+- **No keyword stuffing.** Each bullet should read like something a senior
+  engineer wrote, not a JD echo. See `resume-bullet-writing` for tone.
+- **Explain choices in `notes.md`.** Future-you will thank you.
+
+## Commands
+
+```bash
+make build-job   JOB=jobs/generated/<slug>/variant.yaml   # → resume.pdf
+make preview-job JOB=jobs/generated/<slug>/variant.yaml   # http://127.0.0.1:8000
+make validate                                              # sanity checks
+```
+
+`make preview-job` is the fastest feedback loop — edit `variant.yaml`, save,
+the page reloads automatically.

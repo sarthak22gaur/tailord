@@ -1,0 +1,31 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "https://tailord.dev/schemas/cover-letter-variant.schema.yaml"
+title: cover-letter-variant
+description: >-
+  A cover-letter variant — provides recipient + the four body sections.
+  Inherits voice, salutation, signoff, and length policy from
+  cover-letter-master.yaml.
+type: object
+additionalProperties: false
+properties:
+  name: { type: string }
+  display_name: { type: string }
+  output_filename: { type: string }
+  page_format:
+    type: string
+    enum: [Letter, A4, Legal]
+  recipient:
+    type: object
+    additionalProperties: false
+    properties:
+      team: { type: string }
+      company: { type: string }
+      role: { type: string }
+  sections:
+    type: object
+    additionalProperties: false
+    properties:
+      opening_hook: { type: string }
+      why_them: { type: string }
+      why_me: { type: string }
+      closing: { type: string }

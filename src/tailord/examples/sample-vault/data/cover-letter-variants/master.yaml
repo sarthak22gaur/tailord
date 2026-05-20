@@ -1,0 +1,33 @@
+name: master
+display_name: Cover Letter — Default
+output_filename: jane_doe_cover_letter_master
+page_format: Letter
+
+recipient:
+  team: Hiring Team
+  company: ""
+  role: ""
+
+sections:
+  opening_hook: |
+    I build production backends — workflow engines, event pipelines, and the
+    operational tooling that surrounds them. Most of my recent work is in the
+    handoff between messy real-world inputs and dependable software, and I
+    want a senior IC role where that blend is useful every week.
+
+  why_them: |
+    The teams I fit best make engineering decisions visible: substantive
+    reviews, readable operational data, and clear ownership after launch. I
+    look for systems where correctness, latency, and operator experience all
+    matter, because the most expensive bugs usually cross those boundaries.
+
+  why_me: |
+    At Acme Labs I designed a distributed workflow engine that now runs 40+
+    production pipelines, built a Kafka-backed event bus at 5K events/sec,
+    and rolled out tracing that cut mean-time-to-diagnosis from 45 minutes
+    to under 8. Earlier at Globex I migrated a Rails monolith to a Python
+    service stack and dropped p95 latency by 38%.
+
+  closing: |
+    I'd welcome a conversation about the team's current platform shape and
+    where you'd want a senior engineer to land in the first six months.

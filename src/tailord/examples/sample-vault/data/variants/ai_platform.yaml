@@ -1,0 +1,28 @@
+name: ai_platform
+display_name: Platform Engineer
+output_filename: jane_doe_ai_platform
+page_format: Letter
+mode: normal
+
+summary: >-
+  Distributed-systems engineer focused on workflow runtimes and event-driven
+  ingestion pipelines for production platforms.
+
+include_tags:
+  - platform
+  - distributed
+  - backend
+  - data-pipeline
+  - scale
+  - leadership
+
+exclude_tags: []
+max_bullets_per_role: 3
+max_bullets_per_project: 2
+
+section_order:
+  - profile
+  - experience
+  - projects
+  - skills
+  - education

@@ -1,0 +1,27 @@
+name: startup
+display_name: Generalist (Startup)
+output_filename: jane_doe_startup
+page_format: Letter
+mode: normal
+
+summary: >-
+  Pragmatic full-stack engineer who has owned billing, on-call rotations, and
+  greenfield platform work — useful from seed to Series B.
+
+include_tags:
+  - product
+  - backend
+  - open-source
+  - leadership
+  - performance
+
+exclude_tags: []
+max_bullets_per_role: 3
+max_bullets_per_project: 2
+
+section_order:
+  - profile
+  - experience
+  - projects
+  - skills
+  - education

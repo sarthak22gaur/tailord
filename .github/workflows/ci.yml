@@ -1,0 +1,88 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  editable-install:
+    name: editable install
+    runs-on: ubuntu-latest
+    env:
+      # Sample vault lives inside the package now (src/tailord/examples/sample-vault).
+      # The editable install resolves that path via FRAMEWORK_ROOT in code; we
+      # use the on-disk path here so the validator runs against the same files.
+      RESUME_VAULT: ${{ github.workspace }}/src/tailord/examples/sample-vault
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install framework (editable)
+        run: pip install -e .
+
+      - name: Schema + structural validation
+        run: tailord validate
+
+      - name: HTML render — every resume variant
+        run: |
+          set -euo pipefail
+          for v in master ai_platform infra startup; do
+            python -m tailord.render --variant "$v" --out "/tmp/jane_$v.html"
+          done
+
+      - name: HTML render — every cover-letter variant
+        run: |
+          set -euo pipefail
+          for v in master ai_platform infra startup; do
+            python -m tailord.cover_letter --variant "$v" --html-only > "/tmp/jane_cover_$v.html"
+          done
+
+      - name: Bullet lint (informational)
+        run: python -m tailord.lint_bullets
+        continue-on-error: true
+
+      - name: Skill sync up-to-date check
+        run: tailord sync-skills --check
+
+  wheel-install:
+    name: wheel install (pipx target)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Build wheel
+        run: |
+          pip install build
+          python -m build --wheel
+
+      - name: Install wheel into clean venv
+        run: |
+          python -m venv /tmp/tailord-test
+          /tmp/tailord-test/bin/pip install dist/tailord-*.whl
+
+      - name: Verify sample-vault ships inside the wheel
+        run: |
+          /tmp/tailord-test/bin/python -c "
+          from pathlib import Path
+          from tailord.config import FRAMEWORK_ROOT
+          for sub in ('templates', 'schemas', 'skills', 'examples/sample-vault/data/master.yaml'):
+              p = Path(FRAMEWORK_ROOT) / sub
+              assert p.exists(), f'missing in wheel: {p}'
+              print(f'ok: {p}')
+          "
+
+      - name: "`tailord init` smoke-test (non-interactive)"
+        run: |
+          printf 'Test User\ntest@example.com\nNY\nn\n' | \
+            /tmp/tailord-test/bin/tailord init /tmp/test-vault
+          /tmp/tailord-test/bin/tailord --vault /tmp/test-vault validate

@@ -1,0 +1,98 @@
+<!doctype html>
+{#-
+  Cover letter template.
+
+  Variables provided by the renderer:
+    - profile          : dict from data/master.yaml (name, phone, email, links, …)
+    - cover_letter     : merged variant dict (recipient, sections)
+    - master           : data/cover-letter-master.yaml (voice, salutation_default, signoff)
+    - date_text        : str, today formatted like "November 18, 2025"
+    - css              : str, inlined CSS
+    - preview          : bool, true under dev preview
+
+  Sections render in fixed order: opening_hook → why_them → why_me → closing.
+  Empty sections are skipped silently so a variant can omit one if it wants.
+-#}
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>{{ profile.name }} — {{ cover_letter.display_name | default('Cover Letter') }}</title>
+<style>{{ css | safe }}</style>
+{%- if preview %}
+<script>
+  (function () {
+    let last = null;
+    setInterval(async () => {
+      try {
+        const r = await fetch('/_hash', { cache: 'no-store' });
+        const h = await r.text();
+        if (last !== null && h !== last) location.reload();
+        last = h;
+      } catch (_) { /* server restarting */ }
+    }, 500);
+  })();
+</script>
+{%- endif %}
+</head>
+<body>
+
+<main class="letter">
+
+  <header class="letter-header">
+    <h1 class="letter-name">{{ profile.name }}</h1>
+    <div class="letter-contact">
+      {%- set parts = [] -%}
+      {%- if profile.get('email') %}{% set _ = parts.append(profile['email']) %}{% endif -%}
+      {%- if profile.get('phone') %}{% set _ = parts.append(profile['phone']) %}{% endif -%}
+      {%- if profile.get('location') %}{% set _ = parts.append(profile['location']) %}{% endif -%}
+      {%- for link in profile.get('links') or [] -%}
+        {%- set _ = parts.append(link.get('display') or link.get('url')) -%}
+      {%- endfor -%}
+      {%- for p in parts -%}
+        <span class="item">{{ p }}</span>{% if not loop.last %}<span class="sep">·</span>{% endif %}
+      {%- endfor -%}
+    </div>
+  </header>
+
+  <section class="letter-meta">
+    <p class="letter-date">{{ date_text }}</p>
+
+    {%- set r = cover_letter.recipient or {} -%}
+    {%- if r.company or r.role or r.team -%}
+    <div class="letter-recipient">
+      {%- if r.team %}<div>{{ r.team }}</div>{% endif %}
+      {%- if r.company %}<div>{{ r.company }}</div>{% endif %}
+      {%- if r.role %}<div>Re: {{ r.role }}</div>{% endif %}
+    </div>
+    {%- endif %}
+  </section>
+
+  <section class="letter-body">
+    {%- set salutation_parts = [] -%}
+    {%- if r.team and r.company -%}
+      {%- set salutation = "Dear " ~ r.team ~ " at " ~ r.company -%}
+    {%- elif r.team -%}
+      {%- set salutation = "Dear " ~ r.team -%}
+    {%- else -%}
+      {%- set salutation = master.salutation_default | default("Dear Hiring Team") -%}
+    {%- endif -%}
+    <p>{{ salutation }},</p>
+
+    {%- set sections = cover_letter.sections or {} -%}
+    {%- for key in ['opening_hook', 'why_them', 'why_me', 'closing'] -%}
+      {%- set text = (sections[key] or '') | trim -%}
+      {%- if text %}
+    <p>{{ text | md_inline }}</p>
+      {%- endif -%}
+    {%- endfor %}
+  </section>
+
+  <section class="letter-signoff">
+    <p class="line">{{ master.signoff | default('Best,') }}</p>
+    <p class="printed-name">{{ profile.name }}</p>
+  </section>
+
+</main>
+
+</body>
+</html>

@@ -1,0 +1,124 @@
+---
+name: cover-letter-writing
+description: Write a cover letter for a specific job in this repo's structured YAML format and render it to PDF. Use whenever the user wants a cover letter to accompany a tailored resume, or asks for a cover letter for a JD. Pairs with resume-tailoring.
+---
+
+# Cover letter writing
+
+You are writing a cover letter for a specific job application. The repo's
+renderer handles layout — you are responsible for the content and voice.
+
+## Inputs you should expect
+
+- A job description (raw text in chat, or a file under `jobs/inputs/`).
+- The path to a tailored resume variant under
+  `jobs/generated/<slug>/variant.yaml` (produced by the `resume-tailoring`
+  skill). If the user hasn't run tailoring yet, ask whether you should run
+  it first or work from `data/master.yaml`.
+- (Optional) Specific contacts the user names — recruiter, hiring manager.
+
+## Vault content already in place
+
+- `data/user-preferences.yaml` — under the `cover_letter` key: voice
+  description, forbidden phrases, salutation default, signoff, length
+  policy. **Read this before writing.**
+- `data/master.yaml` — canonical resume content + the `profile` block
+  (name, email, phone, links). The renderer pulls contact info from here
+  automatically.
+- `data/cover-letter-variants/*.yaml` — pre-existing tone defaults. Use
+  them as starting points for non-tailored applications. **Do not modify
+  them unless the user asks.**
+- `${user-preferences.evidence_corpus_dir}/*.md` — long-form research about
+  the candidate's actual projects. Trusted evidence for claims. See
+  `skills/resume-evidence-review/SKILL.md`.
+- `templates/cover-letter.*` and `scripts/cover_letter.py` — the renderer.
+  **Do not modify.**
+
+## What you produce
+
+A single YAML file at `jobs/generated/<slug>/cover-letter.yaml`, where
+`<slug>` matches the slug used by `resume-tailoring` (so resume and cover
+letter live side by side). Then render the PDF.
+
+### YAML shape
+
+```yaml
+name: <same-slug-as-resume-variant>
+display_name: "Cover Letter — <Company> <Role>"
+output_filename: cover-letter
+page_format: Letter
+
+recipient:
+  team: "Hiring Team"          # or specific team if known
+  company: "<Company name>"     # required
+  role: "<Role title>"          # required
+
+sections:
+  opening_hook: |
+    <1-2 sentences. Lead with the strongest signal. No filler openings.>
+  why_them: |
+    <1-2 sentences. Specific to this company / role / product — not generic.>
+  why_me: |
+    <2-3 sentences. Concrete experience that maps to the JD's requirements,
+    grounded in master.yaml bullets or evidence-corpus docs.>
+  closing: |
+    <1 sentence inviting next steps.>
+```
+
+## Voice and length
+
+Pull every voice constraint from `data/user-preferences.yaml`'s
+`cover_letter` block:
+
+- **Total length** is set by `cover_letter.length.{min_words, max_words}`.
+  Default if missing: 200–275 words. The renderer warns to stderr if
+  outside this range — heed it.
+- **Forbidden phrases** listed under `cover_letter.voice.forbidden_phrases`
+  MUST NOT appear in the output.
+- **Voice description** under `cover_letter.voice.description` is the
+  primary style guide. Follow it exactly.
+- If those fields are missing, default to: direct, specific, no fluff,
+  first person, present tense, active voice. No "I am writing to apply
+  for...". No corporate adjectives.
+
+## Sourcing claims
+
+Every concrete claim in `why_me` must trace back to either:
+
+1. A bullet in `data/master.yaml` (preferred), or
+2. Content in `${user-preferences.evidence_corpus_dir}/*.md` (read
+   `resume-evidence-review` before pulling from the corpus).
+
+Do not invent projects, metrics, or roles. If the JD asks for something the
+resume doesn't cover, say so honestly in `why_me` ("strongest adjacent
+experience is X") rather than fabricating.
+
+## Render the PDF
+
+After writing the YAML, run:
+
+```bash
+make build-cover-job JOB=jobs/generated/<slug>/cover-letter.yaml
+```
+
+This produces `jobs/generated/<slug>/cover-letter.pdf`.
+
+## Tone variants (no JD)
+
+If the user just wants a generic-tone cover letter without a JD, point at
+one of the cover-letter variants defined in `data/cover-letter-variants/`:
+
+```bash
+make build-cover VARIANT=<variant_name>
+```
+
+This produces `output/<output_filename>.pdf` from the existing default
+content for that variant.
+
+## Output to the user
+
+When done, report (single line, no preamble):
+
+```
+wrote jobs/generated/<slug>/cover-letter.pdf (<word-count> words)
+```

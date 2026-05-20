@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="800" viewBox="0 0 1280 800">
+  <defs>
+    <linearGradient id="page-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f8fafc"/>
+      <stop offset="1" stop-color="#dbeafe"/>
+    </linearGradient>
+    <linearGradient id="icon-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1e40af"/>
+      <stop offset="1" stop-color="#0f172a"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="18" stdDeviation="22" flood-color="#0f172a" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="800" fill="url(#page-bg)"/>
+
+  <g transform="translate(86 72)">
+    <rect width="700" height="596" rx="16" fill="#ffffff" stroke="#cbd5e1"/>
+    <rect x="0" y="0" width="700" height="64" rx="16" fill="#0a66c2"/>
+    <rect x="0" y="48" width="700" height="16" fill="#0a66c2"/>
+    <circle cx="42" cy="32" r="12" fill="#bfdbfe"/>
+    <rect x="68" y="23" width="128" height="18" rx="9" fill="#dbeafe"/>
+    <rect x="528" y="22" width="110" height="20" rx="10" fill="#dbeafe"/>
+
+    <rect x="40" y="104" width="392" height="34" rx="6" fill="#0f172a"/>
+    <text x="58" y="128" fill="#ffffff" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="18" font-weight="700">Senior Platform Engineer</text>
+
+    <text x="40" y="174" fill="#334155" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="16" font-weight="700">Acme Systems</text>
+    <text x="40" y="204" fill="#64748b" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="14">Remote - Infrastructure, AI platform, reliability</text>
+
+    <rect x="40" y="238" width="620" height="1" fill="#e2e8f0"/>
+    <text x="40" y="278" fill="#0f172a" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="18" font-weight="700">About the job</text>
+    <text x="40" y="316" fill="#475569" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="15">Build platform services for document intelligence and production AI workflows.</text>
+    <text x="40" y="346" fill="#475569" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="15">Own Python and TypeScript systems, improve observability, and reduce operator toil.</text>
+    <text x="40" y="376" fill="#475569" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="15">Work with distributed queues, model evaluation, and evidence-backed automation.</text>
+
+    <rect x="40" y="430" width="160" height="42" rx="21" fill="#0a66c2"/>
+    <text x="72" y="457" fill="#ffffff" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="14" font-weight="700">Easy Apply</text>
+    <rect x="218" y="430" width="104" height="42" rx="21" fill="#ffffff" stroke="#0a66c2" stroke-width="2"/>
+    <text x="252" y="457" fill="#0a66c2" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="14" font-weight="700">Save</text>
+  </g>
+
+  <g filter="url(#shadow)" transform="translate(760 86)">
+    <rect width="384" height="618" rx="18" fill="#f8fafc" stroke="#cbd5e1"/>
+    <rect x="1" y="1" width="382" height="54" rx="18" fill="#ffffff"/>
+
+    <g transform="translate(24 18)">
+      <rect width="32" height="32" rx="8" fill="url(#icon-bg)"/>
+      <text x="16" y="24" text-anchor="middle" fill="#ffffff" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="21" font-weight="800">T</text>
+    </g>
+
+    <text x="68" y="35" fill="#0f172a" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="18" font-weight="800">tailord</text>
+    <text x="68" y="54" fill="#047857" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="12">bridge connected</text>
+    <text x="304" y="39" fill="#2563eb" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="12" font-weight="700">Settings</text>
+
+    <rect x="18" y="78" width="348" height="44" rx="8" fill="#2563eb"/>
+    <text x="192" y="106" text-anchor="middle" fill="#ffffff" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="15" font-weight="800">Queue job</text>
+
+    <text x="18" y="158" fill="#64748b" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="12" font-weight="800" letter-spacing="1.1">RECENT</text>
+    <text x="300" y="158" fill="#64748b" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="12">1 running</text>
+
+    <g transform="translate(18 176)">
+      <rect width="348" height="176" rx="8" fill="#ffffff" stroke="#bfdbfe"/>
+      <text x="14" y="28" fill="#0f172a" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="14" font-weight="800">Acme Systems</text>
+      <text x="118" y="28" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="14">-</text>
+      <text x="132" y="28" fill="#334155" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="14">Senior Platform Engineer</text>
+      <rect x="14" y="45" width="58" height="22" rx="11" fill="#dcfce7"/>
+      <text x="43" y="60" text-anchor="middle" fill="#166534" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="11" font-weight="800">84/78</text>
+      <rect x="80" y="45" width="42" height="22" rx="11" fill="#f1f5f9"/>
+      <text x="101" y="60" text-anchor="middle" fill="#475569" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="11" font-weight="800">A</text>
+      <rect x="246" y="44" width="82" height="24" rx="12" fill="#dbeafe"/>
+      <text x="287" y="60" text-anchor="middle" fill="#1d4ed8" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="10" font-weight="900">EVALUATED</text>
+      <text x="14" y="96" fill="#475569" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="12">Strong platform match with evidence for AI workflows,</text>
+      <text x="14" y="116" fill="#475569" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="12">distributed systems, and production reliability work.</text>
+      <rect x="14" y="136" width="146" height="30" rx="7" fill="#2563eb"/>
+      <text x="87" y="156" text-anchor="middle" fill="#ffffff" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="12" font-weight="800">Generate resume</text>
+      <rect x="170" y="136" width="74" height="30" rx="7" fill="#ffffff" stroke="#cbd5e1"/>
+      <text x="207" y="156" text-anchor="middle" fill="#475569" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="12" font-weight="700">Skip</text>
+    </g>
+
+    <g transform="translate(18 366)">
+      <rect width="348" height="92" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+      <text x="14" y="29" fill="#0f172a" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="14" font-weight="800">Northstar AI</text>
+      <text x="108" y="29" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="14">-</text>
+      <text x="122" y="29" fill="#334155" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="14">Staff Full-Stack Engineer</text>
+      <rect x="14" y="46" width="58" height="22" rx="11" fill="#dcfce7"/>
+      <text x="43" y="61" text-anchor="middle" fill="#166534" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="11" font-weight="800">81/74</text>
+      <rect x="254" y="45" width="74" height="24" rx="12" fill="#e0f2fe"/>
+      <text x="291" y="61" text-anchor="middle" fill="#075985" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="10" font-weight="900">TAILORED</text>
+    </g>
+
+    <g transform="translate(18 474)">
+      <rect width="348" height="88" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+      <text x="14" y="29" fill="#0f172a" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="14" font-weight="800">Nimbus Labs</text>
+      <text x="112" y="29" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="14">-</text>
+      <text x="126" y="29" fill="#334155" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="14">AI Tools Engineer</text>
+      <rect x="14" y="46" width="70" height="22" rx="11" fill="#fef3c7"/>
+      <text x="49" y="61" text-anchor="middle" fill="#92400e" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="11" font-weight="800">running</text>
+    </g>
+  </g>
+
+  <text x="86" y="724" fill="#475569" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="18" font-weight="700">Local-only companion workflow</text>
+  <text x="86" y="754" fill="#64748b" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="15">Visible JD text is sent to your local Tailord bridge only when you click Queue job.</text>
+</svg>

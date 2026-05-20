@@ -1,0 +1,32 @@
+name: infra
+display_name: Cover Letter — Infra / SRE
+output_filename: jane_doe_cover_letter_infra
+page_format: Letter
+
+recipient:
+  team: Infrastructure Team
+  company: ""
+  role: ""
+
+sections:
+  opening_hook: |
+    I'm a backend engineer with a bias toward operational maturity — the
+    work that keeps systems boring under load. Tracing, alert hygiene, and
+    migrations done in flight are where I've shipped the most measurable
+    wins in the last few years.
+
+  why_them: |
+    Infra teams that get the most out of senior hires are the ones that
+    treat reliability as a product constraint, not a side project. I'm
+    looking for that model.
+
+  why_me: |
+    At Acme Labs I rolled out structured logging and per-pipeline tracing
+    that dropped mean-time-to-diagnosis from 45 minutes to under 8 across
+    the team's services. Before that at Globex I migrated the public API
+    from a Rails monolith to a service-oriented Python stack, cutting p95
+    latency by 38% and retiring 30+ noisy alerts in the process.
+
+  closing: |
+    I'd like to learn more about your current on-call shape and the next
+    big migration on the roadmap.

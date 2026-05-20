@@ -1,0 +1,31 @@
+name: ai_platform
+display_name: Cover Letter — Platform
+output_filename: jane_doe_cover_letter_ai_platform
+page_format: Letter
+
+recipient:
+  team: Platform Engineering Team
+  company: ""
+  role: ""
+
+sections:
+  opening_hook: |
+    I build platform infrastructure that downstream teams actually want to
+    use — workflow engines, event-driven pipelines, and the runtime
+    observability that keeps them honest in production.
+
+  why_them: |
+    Platform work is most interesting when the product surface area is wide
+    enough that the team has to argue about scope. The teams I gravitate
+    toward treat platform engineering as a product, not a service.
+
+  why_me: |
+    At Acme Labs I designed and led a distributed workflow engine that runs
+    40+ production pipelines, paired with a Kafka-backed event bus at 5K
+    events/sec including idempotent retries and per-tenant rate limits.
+    The observability rollout that came with it cut MTTR from 45 minutes
+    to under 8 across the team.
+
+  closing: |
+    Happy to walk through the design decisions behind any of the above,
+    including the tradeoffs that didn't make the final cut.

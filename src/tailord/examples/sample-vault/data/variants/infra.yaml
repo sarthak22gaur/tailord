@@ -1,0 +1,30 @@
+name: infra
+display_name: Infra / SRE
+output_filename: jane_doe_infra
+page_format: Letter
+mode: normal
+
+summary: >-
+  Backend engineer with a bias toward operational maturity — tracing, alert
+  hygiene, and migrations done in flight.
+
+include_tags:
+  - infra
+  - observability
+  - backend
+  - migration
+  - performance
+  - distributed
+
+exclude_tags:
+  - leadership
+
+max_bullets_per_role: 3
+max_bullets_per_project: 2
+
+section_order:
+  - profile
+  - experience
+  - projects
+  - skills
+  - education

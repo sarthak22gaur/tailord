@@ -1,0 +1,135 @@
+# Sample vault — fictional candidate. Used by CI and as a worked example for
+# what a real vault looks like. Replace every field with your own content
+# after running `tailord init` (or copying this directory).
+
+profile:
+  name: Jane Doe
+  headline: Senior Software Engineer
+  location: Brooklyn, NY
+  phone: "+1 (555) 010-0199"
+  email: jane.doe@example.com
+  links:
+    - label: LinkedIn
+      url: https://www.linkedin.com/in/example-jane-doe
+      display: linkedin.com/in/example-jane-doe
+    - label: GitHub
+      url: https://github.com/example-jane-doe
+      display: github.com/example-jane-doe
+
+experience:
+  - id: acmelabs
+    company: Acme Labs
+    role: Senior Software Engineer
+    location: Brooklyn, NY
+    start: March 2022
+    end: Present
+    bullets:
+      - id: acme_workflow_engine
+        priority: 100
+        impact: high
+        tags: [platform, backend, distributed]
+        categories: [architecture]
+        text: >-
+          Designed and led a **distributed workflow engine** that runs
+          **40+ production pipelines** for downstream data and ops teams.
+      - id: acme_event_bus
+        priority: 90
+        impact: high
+        tags: [backend, distributed, data-pipeline, scale]
+        categories: [data-pipeline]
+        text: >-
+          Built a **Kafka-backed event bus** processing **5K events/sec**,
+          including idempotent retries and per-tenant rate limits.
+      - id: acme_observability
+        priority: 70
+        impact: medium
+        tags: [observability, platform, infra]
+        categories: [infra]
+        text: >-
+          Rolled out structured logging and per-pipeline tracing, cutting
+          mean-time-to-diagnosis from **45 minutes to under 8** across the
+          team's services.
+      - id: acme_mentorship
+        priority: 60
+        impact: medium
+        tags: [leadership]
+        categories: [leadership]
+        text: >-
+          Mentored **two mid-level engineers** through promotion, including
+          design-review coaching and an on-call rotation refresh.
+
+  - id: globex
+    company: Globex Corp
+    role: Software Engineer
+    location: Remote
+    start: June 2019
+    end: February 2022
+    bullets:
+      - id: globex_api_migration
+        priority: 80
+        impact: high
+        tags: [backend, migration, performance]
+        categories: [backend]
+        text: >-
+          Migrated the public API from a monolithic Rails app to a
+          service-oriented Python stack, reducing **p95 latency by 38%**.
+      - id: globex_billing
+        priority: 70
+        impact: medium
+        tags: [backend, product]
+        categories: [product]
+        text: >-
+          Owned the **metered-billing subsystem** end-to-end, including
+          invariants the legal team signed off on after a prior accounting bug.
+      - id: globex_oncall
+        priority: 50
+        impact: low
+        tags: [observability, infra]
+        categories: [infra]
+        text: >-
+          Drove an on-call cleanup that retired **30+ noisy alerts**, leaving
+          the team's pager budget under SLO for the first time in a year.
+
+projects:
+  - id: tinyq
+    name: TinyQ
+    subtitle: Minimal in-process job queue (open source)
+    url: https://github.com/example-jane-doe/tinyq
+    start: January 2023
+    end: Present
+    bullets:
+      - id: tinyq_design
+        priority: 80
+        impact: medium
+        tags: [open-source, backend, distributed]
+        categories: [open-source]
+        text: >-
+          Built a **single-binary job queue** with at-least-once delivery and
+          a pluggable persistence layer, used by ~400 GitHub-stargazers.
+      - id: tinyq_benchmarks
+        priority: 70
+        impact: low
+        tags: [performance, open-source]
+        categories: [performance]
+        text: >-
+          Published a **benchmark suite** comparing TinyQ against two industry
+          options, documenting where the design tradeoffs land.
+
+skills:
+  - category: Languages
+    items: [Python, Go, TypeScript, SQL]
+  - category: Infrastructure
+    items: [Kafka, PostgreSQL, AWS, Docker]
+  - category: Focus Areas
+    items: [Distributed Systems, Workflow Orchestration, Observability, API Design]
+
+education:
+  - id: state_u
+    institution: State University
+    location: Anytown, NY
+    degree: B.S. in Computer Science
+    start: September 2015
+    end: May 2019
+    details:
+      - "GPA: 3.7/4.0"
+      - "Coursework: Distributed Systems, Compilers, Operating Systems"

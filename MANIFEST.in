@@ -1,0 +1,10 @@
+recursive-include src/tailord/templates *
+recursive-include src/tailord/schemas *
+recursive-include src/tailord/skills *
+recursive-include src/tailord/examples *
+recursive-include tools/jd-bridge/config *
+recursive-include tools/jd-bridge/src *
+include tools/jd-bridge/.env.example
+include tools/jd-bridge/package.json
+include tools/jd-bridge/package-lock.json
+include LICENSE README.md POSITIONING.md

@@ -1,0 +1,41 @@
+# Sample preferences for the fictional candidate. Replace every field with
+# your own after copying this vault.
+
+work_authorization:
+  requires_sponsorship: false
+  type: "US citizen"
+
+targets:
+  roles:
+    - Backend platform / distributed systems
+    - Workflow orchestration
+    - Observability and infra tooling
+  anti_roles:
+    - Engineering management
+    - Frontend-heavy consumer UI
+  geo:
+    - Brooklyn, NY
+    - Remote (US)
+  seniority:
+    - Senior
+
+evidence_corpus_dir: docs/resume-research
+
+cover_letter:
+  voice:
+    description: >-
+      Direct, specific, no fluff. Lead with concrete signal (years, scale,
+      tech) rather than adjectives. Four short paragraphs: opening hook,
+      why them, why me, closing. 200-275 words total.
+    forbidden_phrases:
+      - "I am writing to apply"
+      - "thrilled to apply"
+      - "passionate about"
+      - "perfect candidate"
+      - "team player"
+      - "to whom it may concern"
+  salutation_default: "Dear Hiring Team"
+  signoff: "Best,"
+  length:
+    min_words: 200
+    max_words: 275

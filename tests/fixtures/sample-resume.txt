@@ -1,0 +1,34 @@
+Maya Patel
+Seattle, WA | maya.patel@example.com | https://github.com/mayapatel
+
+Senior Platform Engineer
+
+EXPERIENCE
+
+Northstar Robotics, Senior Platform Engineer
+April 2021 - Present | Seattle, WA
+- Led the fleet telemetry migration from batch uploads to streaming events, reducing incident triage time from 2 hours to 25 minutes.
+- Built a Kubernetes deployment dashboard for release managers that made rollback state visible without shell access.
+- Mentored three backend engineers through design reviews and on-call rotations.
+
+BrightCart, Software Engineer
+August 2018 - March 2021 | Remote
+- Reworked the inventory reservation service to prevent oversells during peak campaigns.
+- Added trace sampling and alert routing for checkout APIs used by retail partners.
+
+PROJECTS
+
+LedgerLens
+Open-source CLI for checking CSV ledger exports
+- Built a rules engine that flags duplicate payouts and missing reconciliation fields before import.
+
+SKILLS
+
+Languages: Python, TypeScript, SQL
+Infrastructure: Kubernetes, PostgreSQL, AWS, Docker
+Focus Areas: Platform Engineering, Observability, Data Pipelines
+
+EDUCATION
+
+University of Washington
+B.S. Computer Science, 2014 - 2018

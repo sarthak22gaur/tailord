@@ -1,0 +1,11 @@
+{
+  "name": "tailord-jd-extension",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "icons": "node scripts/make-icons.mjs",
+    "package": "node scripts/package-extension.mjs",
+    "test": "node --test"
+  }
+}

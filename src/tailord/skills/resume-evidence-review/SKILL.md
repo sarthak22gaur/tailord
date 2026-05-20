@@ -1,0 +1,160 @@
+---
+name: resume-evidence-review
+description: Use the research docs under the user's evidence corpus directory as trusted evidence when tailoring or extending the resume. Read this before writing any bullet that draws on those docs, or any rewrite that adds a claim not already in data/master.yaml.
+---
+
+# Resume evidence review
+
+The vault may carry detailed research docs about the candidate's actual
+work under the path named by `user-preferences.evidence_corpus_dir`
+(default: `docs/resume-research/`). A typical shape:
+
+```
+<evidence_corpus_dir>/
+├── 00-consolidated-report.md      ← cross-project summary
+├── 01-<project-slug>-research.md
+├── 02-<project-slug>-research.md
+├── …
+├── positioning-and-narrative.md   ← strong-fit / weak-fit map (read first when present)
+└── evidence-gaps.md               ← claims that still need proof — never ship as bullets
+```
+
+These are **trusted evidence**. They are *not* the resume. Use them to:
+
+- pull metrics, scale numbers, technologies, and architecture details the
+  candidate already verified;
+- support a rewrite that strengthens an existing canonical bullet;
+- justify an `extra_bullets` entry in a job-specific variant.
+
+Later docs override earlier docs. If a recent addendum marks a metric in
+an older doc as needing evidence, do not put that metric in a resume
+until the candidate provides the artifact.
+
+## Trust ladder
+
+When you're about to put a claim into a resume bullet, ask: where does
+this claim come from?
+
+| Source | Trust level | What you can do with it |
+|---|---|---|
+| `data/master.yaml` bullet | Canonical | Use freely, including verbatim. |
+| Research doc, exact phrase | High evidence | Quote, paraphrase, derive a new bullet. Cite source. |
+| Research doc, multi-section inference | Medium evidence | Allowed only if the inference is obviously supported. Note it in `notes.md`. |
+| JD only / your inference | **Forbidden** | Drop it. Do not infer from a JD what the candidate has done. |
+| Anywhere else (training data, your own assumptions) | **Forbidden** | Drop it. |
+
+The trust ladder is one-directional: a JD's keywords never upgrade a
+vague research mention into a verifiable bullet.
+
+## Hard "do not" list
+
+Never put any of these into a generated resume:
+
+- A metric that doesn't appear in the research docs or `data/master.yaml`.
+  ("10x faster" is forbidden unless the docs say 10x.)
+- A technology the candidate didn't ship with. Especially: tools that
+  *only* appear in the JD.
+- A team-size or leadership claim ("led a team of X", "mentored Y junior
+  engineers") that isn't in evidence. Default position: not a leadership
+  claim.
+- An outcome attribution ("increased revenue by 30%") unless evidence
+  explicitly names the outcome.
+- A "production scale" claim ("handles millions of …") unless evidence
+  shows the number.
+
+If a JD really needs a claim the evidence doesn't support, that's a
+signal the candidate may not be the right fit for that line of the JD —
+leave it off and position around what they have.
+
+## Internal codenames
+
+If the candidate's evidence corpus refers to a product by an internal
+codename, repo slug, or Jira-key prefix, the resume should use the
+external-facing name only. The mapping is the candidate's responsibility
+to record (typically in `data/master.yaml` as a comment, or in the
+top-level evidence doc).
+
+Default behavior when you see an obvious codename in a research doc:
+
+- Strip Jira-key prefixes (e.g. `FOO-123` style) entirely.
+- Strip git commit hashes entirely.
+- Replace internal repo slugs (`<codename>-protocol`, `<codename>-console`,
+  etc.) with the product's external name.
+
+If you can't tell which name is public, ask the candidate before
+generating. Do not guess.
+
+## How to cite evidence in a variant
+
+When you add an `extra_bullets` entry to a tailored `variant.yaml`,
+include a `source:` pointer:
+
+```yaml
+extra_bullets:
+  <role_id>:
+    - id: <derived_bullet_id>
+      tags: [platform, distributed]
+      source:
+        file: <evidence_corpus_dir>/<doc>.md
+        heading: <section heading from that doc>
+      text: >-
+        <bullet text>
+```
+
+The renderer ignores `source:` — it's there for human review and for
+`notes.md` to reference. Keeping it in the YAML means a future maintainer
+can re-verify the claim in seconds.
+
+## Confidence labels for `notes.md`
+
+When you summarize the bullets you wrote, classify each one:
+
+- **low** — pulled verbatim or near-verbatim from a single research-doc
+  section. Easy to defend.
+- **medium** — combines two or more sections, but every claim is still
+  individually supported. Note which sections you combined.
+- **high** — you stretched. Don't ship high-risk bullets without explicit
+  candidate approval. Often the right move is to delete them.
+
+## Positioning narrative
+
+If the evidence corpus contains a positioning doc (any file with
+"positioning" in its name, e.g. `positioning-and-narrative.md`), read it
+before tailoring. It typically defines the strong-fit / weak-fit map for
+the candidate.
+
+What this means in practice:
+
+- If the JD lands in the **strong-fit** column, surface the matching
+  bullets first and use the evidence docs aggressively to derive extra
+  technical depth.
+- If the JD lands in the **weak-fit** column, do not invent matching
+  experience. Re-adding skills the candidate deliberately trimmed from
+  `data/master.yaml` just to chase a JD keyword is forbidden under the
+  trust-ladder rules above.
+- If the JD straddles both, lean on the strong-fit bullets and let any
+  legacy weak-fit work in `data/master.yaml` carry the secondary signal
+  — don't try to manufacture more.
+
+If a JD's core requirement sits solidly in the weak-fit column, that's a
+signal the candidate may not be the right person for the role. Surface
+that rather than over-tailoring.
+
+## Workflow checklist
+
+Before you finalize a tailored resume:
+
+- [ ] Every bullet in `variant.yaml` traces to either a `data/master.yaml`
+      id or a `source:` field pointing at a research-doc heading.
+- [ ] Every metric in every bullet text appears (literally or with
+      trivial formatting) in the source.
+- [ ] Every named technology in a bullet appears in the source.
+- [ ] No internal codenames, repo slugs, Jira-key prefixes, or commit
+      hashes appear in the rendered output (see "Internal codenames"
+      above).
+- [ ] No team size, leadership, or scale claim is unsupported.
+- [ ] JD-positioning check: where does this role sit on the strong-fit
+      / weak-fit map (if a positioning doc is present)? Tailoring
+      approach matches.
+- [ ] `notes.md` records which docs you read and any medium/high-risk
+      decisions.

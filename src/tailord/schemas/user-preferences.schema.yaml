@@ -1,0 +1,63 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "https://tailord.dev/schemas/user-preferences.schema.yaml"
+title: user-preferences
+description: >-
+  User-specific constraints and preferences that the skills read at runtime.
+  Replaces the bits that used to be hard-coded in SKILL.md files (visa
+  status, target roles, evidence corpus location) and the cover-letter
+  voice block that used to live in cover-letter-master.yaml.
+type: object
+additionalProperties: false
+properties:
+  work_authorization:
+    type: object
+    additionalProperties: false
+    properties:
+      requires_sponsorship: { type: boolean }
+      type: { type: string, description: "e.g. H1B, OPT, citizen, PR" }
+      notes: { type: string }
+  targets:
+    type: object
+    additionalProperties: false
+    properties:
+      roles:
+        type: array
+        items: { type: string }
+        description: "Role family labels the candidate is actively targeting."
+      anti_roles:
+        type: array
+        items: { type: string }
+        description: "Role families the candidate explicitly does not want."
+      geo:
+        type: array
+        items: { type: string }
+        description: "Acceptable locations / remote modes."
+      seniority:
+        type: array
+        items: { type: string }
+        description: "Acceptable levels (e.g. Senior, Staff, Principal)."
+  evidence_corpus_dir:
+    type: string
+    description: >-
+      Path (relative to vault root) containing trusted research/evidence docs
+      that skills may draw on when tailoring.
+  cover_letter:
+    type: object
+    additionalProperties: false
+    properties:
+      voice:
+        type: object
+        additionalProperties: false
+        properties:
+          description: { type: string }
+          forbidden_phrases:
+            type: array
+            items: { type: string }
+      salutation_default: { type: string }
+      signoff: { type: string }
+      length:
+        type: object
+        additionalProperties: false
+        properties:
+          min_words: { type: integer, minimum: 1 }
+          max_words: { type: integer, minimum: 1 }

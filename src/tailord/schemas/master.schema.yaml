@@ -1,0 +1,118 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "https://tailord.dev/schemas/master.schema.yaml"
+title: master
+description: >-
+  Canonical resume content — the single source of truth a vault provides.
+  Variant files filter/override these entries; cover letters pull profile
+  contact info from here.
+type: object
+additionalProperties: false
+required: [profile]
+properties:
+  profile: { $ref: "#/$defs/profile" }
+  experience:
+    type: array
+    items: { $ref: "#/$defs/experience" }
+  projects:
+    type: array
+    items: { $ref: "#/$defs/project" }
+  education:
+    type: array
+    items: { $ref: "#/$defs/education" }
+  skills:
+    type: array
+    items: { $ref: "#/$defs/skill_group" }
+
+$defs:
+  profile:
+    type: object
+    required: [name, email]
+    additionalProperties: false
+    properties:
+      name: { type: string, minLength: 1 }
+      headline: { type: string }
+      location: { type: string }
+      phone: { type: string }
+      email: { type: string, format: email }
+      summary: { type: string }
+      links:
+        type: array
+        items:
+          type: object
+          required: [url]
+          additionalProperties: false
+          properties:
+            label: { type: string }
+            url: { type: string, format: uri }
+            display: { type: string }
+
+  bullet:
+    type: object
+    required: [id, text]
+    additionalProperties: false
+    properties:
+      id: { type: string, pattern: "^[a-z][a-z0-9_]*$" }
+      text: { type: string, minLength: 10 }
+      tags: { type: array, items: { type: string } }
+      priority: { type: integer }
+      impact: { type: string, enum: [high, medium, low] }
+      categories: { type: array, items: { type: string } }
+      pinned: { type: boolean }
+      source: { type: string }
+
+  experience:
+    type: object
+    required: [id, company, role, start]
+    additionalProperties: false
+    properties:
+      id: { type: string, pattern: "^[a-z][a-z0-9_]*$" }
+      company: { type: string }
+      role: { type: string }
+      location: { type: string }
+      start: { type: string }
+      end: { type: string }
+      bullets:
+        type: array
+        items: { $ref: "#/$defs/bullet" }
+
+  project:
+    type: object
+    required: [id, name]
+    additionalProperties: false
+    properties:
+      id: { type: string, pattern: "^[a-z][a-z0-9_]*$" }
+      name: { type: string }
+      subtitle: { type: string }
+      url: { type: string, format: uri }
+      start: { type: string }
+      end: { type: string }
+      tech: { type: array, items: { type: string } }
+      bullets:
+        type: array
+        items: { $ref: "#/$defs/bullet" }
+
+  education:
+    type: object
+    required: [id, institution, degree]
+    additionalProperties: false
+    properties:
+      id: { type: string, pattern: "^[a-z][a-z0-9_]*$" }
+      institution: { type: string }
+      degree: { type: string }
+      field: { type: string }
+      location: { type: string }
+      start: { type: string }
+      end: { type: string }
+      details:
+        type: array
+        items: { type: string }
+
+  skill_group:
+    type: object
+    required: [category, items]
+    additionalProperties: false
+    properties:
+      category: { type: string }
+      items:
+        type: array
+        items: { type: string }

@@ -1,0 +1,229 @@
+/* Resume stylesheet — print-first, ATS-safe single column.
+ *
+ * Design tokens up top so an agent can retune density/colors in one place
+ * without touching component rules below.
+ */
+
+:root {
+  --color-text: #111418;
+  --color-muted: #555a63;
+  --color-rule: #1f2937;
+  --color-accent: #1e3a8a;            /* deep navy; minimal color usage */
+  --font-sans: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+  --fs-name: 19pt;
+  --fs-section: 10.25pt;
+  --fs-role: 10.5pt;
+  --fs-body: 9.5pt;
+  --fs-meta: 8.75pt;
+
+  /* Density knob — overridden at PDF build time by the auto page-fit pass
+   * in scripts/build.py. Stays 1.0 for the dev preview. Range: ~0.92–1.40. */
+  --density: 1;
+
+  --line-height: calc(1.28 * var(--density));
+  --space-section: calc(7px * var(--density));
+  --space-entry: calc(5px * var(--density));
+  --space-bullet: 0px;
+
+  /* Split margins: tighter top/bottom lets content breathe vertically;
+   * horizontal stays wide enough to keep line length readable. */
+  --page-margin-y: 0.32in;
+  --page-margin-x: 0.5in;
+}
+
+/* Compact mode tightens further when a variant is still pushing past one page. */
+body.mode-compact {
+  --fs-body: 9.25pt;
+  --fs-role: 10.5pt;
+  --line-height: calc(1.25 * var(--density));
+  --space-section: calc(5px * var(--density));
+  --space-entry: calc(4px * var(--density));
+  --space-bullet: 0px;
+  --page-margin-y: 0.28in;
+  --page-margin-x: 0.45in;
+}
+
+@page {
+  size: Letter;
+  margin: var(--page-margin-y) var(--page-margin-x);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #fff;
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: var(--line-height);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.resume {
+  max-width: 7.5in;
+  margin: 0 auto;
+  padding: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+a:hover { text-decoration: underline; }
+
+/* ---------- profile header ---------- */
+.profile { text-align: center; margin-bottom: var(--space-section); }
+.profile-name {
+  font-size: var(--fs-name);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  margin: 0 0 2px 0;
+}
+.profile-contact {
+  font-size: var(--fs-meta);
+  color: var(--color-muted);
+  margin: 0;
+}
+.profile-summary {
+  font-size: var(--fs-body);
+  color: var(--color-text);
+  margin: 6px auto 0 auto;
+  max-width: 6.5in;
+  text-align: center;
+  line-height: 1.35;
+}
+
+/* ---------- section title ---------- */
+.section-title {
+  font-size: var(--fs-section);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  border-bottom: 1px solid var(--color-rule);
+  padding-bottom: 1px;
+  margin: var(--space-section) 0 4px 0;
+  page-break-after: avoid;
+  break-after: avoid;
+}
+
+/* ---------- entry (role/project/education) ---------- */
+.entry {
+  margin-bottom: var(--space-entry);
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+.entry:last-child { margin-bottom: 0; }
+.experience .entry { margin-bottom: calc(var(--space-entry) + 4px); }
+.experience .entry:last-child { margin-bottom: 0; }
+
+/* Two-row entry header.
+ * Row 1: bold company / italic dates  (primary skim signal)
+ * Row 2: role + location               (secondary detail, lighter)
+ *
+ * Both rows are flex space-between, so no row ever has empty trailing
+ * space on the opposite side. */
+.entry-header {
+  margin-bottom: 2px;
+}
+.entry-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  line-height: 1.22;
+}
+.entry-row-primary {
+  font-size: var(--fs-role);
+}
+.entry-row-secondary {
+  font-size: var(--fs-meta);
+  color: var(--color-muted);
+}
+.entry-title {
+  font-weight: 700;
+  color: var(--color-text);
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.entry-subtitle {
+  font-weight: 400;
+  color: var(--color-text);
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.entry-meta {
+  color: var(--color-muted);
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+.entry-dates {
+  font-style: italic;
+  color: var(--color-muted);
+  font-size: var(--fs-meta);
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+
+/* ---------- bullets ---------- */
+.bullets {
+  list-style: disc;
+  margin: 2px 0 0 0;
+  padding-left: 18px;
+}
+.bullets li {
+  margin-bottom: var(--space-bullet);
+  padding-left: 2px;
+}
+.bullets li:last-child { margin-bottom: 0; }
+.bullets strong { font-weight: 700; }
+
+/* ---------- skills ---------- */
+.skill-list { margin: 4px 0 0 0; padding: 0; }
+.skill-row {
+  display: flex;
+  gap: 6px;
+  margin: 0 0 2px 0;
+}
+.skill-row dt {
+  font-weight: 700;
+  flex: 0 0 auto;
+}
+.skill-row dd {
+  margin: 0;
+  flex: 1 1 auto;
+}
+
+/* ---------- education extras ---------- */
+.entry-details,
+.entry-coursework {
+  margin: 2px 0 0 0;
+  font-size: var(--fs-body);
+}
+.entry-coursework .label { font-weight: 600; }
+
+/* ---------- screen-only preview niceties ---------- */
+@media screen {
+  body {
+    background: #eef0f3;
+    padding: 24px 0;
+  }
+  .resume {
+    background: #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.08);
+    padding: var(--page-margin-y) var(--page-margin-x);
+  }
+}
+
+/* ---------- print rules ---------- */
+@media print {
+  body { background: #fff; padding: 0; }
+  .resume { box-shadow: none; padding: 0; }
+  a { color: inherit; text-decoration: none; }
+}

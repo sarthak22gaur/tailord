@@ -1,0 +1,145 @@
+# Prompt templates handed to `claude -p` per phase. Variables in
+# {{double-braces}} are substituted by src/worker.js before invocation.
+#
+# Each template MUST end with a "RESULT:" line containing a single-line JSON
+# object. The bridge parses that line and records the run.
+#
+# Variables provided to evaluate_template:
+#   - candidate_name, vault_root, url, company, title, jd
+#
+# Variables provided to generate_template:
+#   - candidate_name, vault_root, vault_jobs, url, company, title, jd
+#   - include_cover_letter                       ("true" | "false")
+#   - prior_grade, prior_compatibility, prior_consideration
+#   - prior_work_authorization, prior_rationale  (from the eval phase)
+
+evaluate_template: |
+  You are evaluating a job application for {{candidate_name}}. Their
+  work-authorization, target-role, and voice preferences live in
+  {{vault_root}}/data/user-preferences.yaml — read it once before scoring
+  and treat its fields as hard constraints.
+
+  Source URL: {{url}}
+  Company:    {{company}}
+  Title:      {{title}}
+
+  Steps:
+    1. Apply the `resume-job-fit-evaluator` skill's rubric INTERNALLY to
+       score this JD against the candidate's resume, evidence corpus, and
+       the constraints in user-preferences.yaml (including the
+       work-authorization gate).
+
+    2. Do NOT emit the evaluator's Markdown output — no verdict header, no
+       score breakdown table, no requirement matrix, no strong/weak signal
+       lists, no narrative. Bridge runs are machine-consumed; the popup
+       only reads the RESULT JSON below. Output nothing before the RESULT
+       line.
+
+    3. Do NOT write any files. Do NOT invoke `resume-tailoring` or
+       `cover-letter-writing`. Do NOT pick a folder slug. This is an
+       evaluation pass only.
+
+    4. The RESULT line is MANDATORY and is the ONLY thing you emit. Output
+       exactly one line beginning with "RESULT:" followed by a single-line
+       JSON object with these fields:
+         - compatibility_score:  integer 0-100, from the evaluator.
+         - consideration_score:  integer 0-100, from the evaluator.
+         - grade:                "A" | "B" | "C" | "D" | "F" — use the
+                                 lower of the two bands per the rubric.
+         - recommendation:       "apply" | "long-shot" | "skip". Follow
+                                 the band-to-recommendation text in the
+                                 evaluator skill's Bands table; do not
+                                 invent a different mapping.
+         - rationale:            ONE to THREE sentences, max ~300 chars,
+                                 plain text, no newlines. Lead with the
+                                 strongest signal driving the verdict.
+         - blockers:             array of strings; each entry is a
+                                 single-line description of a hard
+                                 blocker (sponsorship gate, citizenship,
+                                 clearance, missing must-have). Empty
+                                 array if none.
+         - work_authorization:   "yes" | "no" | "not_mentioned" |
+                                 "ambiguous" | "na". Use "na" only when
+                                 user-preferences sets
+                                 requires_sponsorship: false.
+
+       If the JD is unreadable or scoring genuinely cannot proceed, still
+       emit a RESULT line: compatibility_score=0, consideration_score=0,
+       grade="F", recommendation="skip", and explain in rationale +
+       blockers. The bridge depends on this line.
+
+  Example (your entire response is one line shaped like this):
+    RESULT: {"compatibility_score": 78, "consideration_score": 72, "grade": "B", "recommendation": "apply", "rationale": "Strong fit: backend Python at scale, AWS infra primary stack, JD calls out data-pipeline patterns the candidate owns. Sponsorship offered.", "blockers": [], "work_authorization": "yes"}
+
+  Job description follows between the fences:
+  ---BEGIN JD---
+  {{jd}}
+  ---END JD---
+
+
+generate_template: |
+  You are generating tailored artifacts for {{candidate_name}}'s
+  application. Evaluation has already run; the user has explicitly
+  requested artifact generation. Their work-authorization, target-role,
+  and voice preferences live in {{vault_root}}/data/user-preferences.yaml.
+
+  Source URL: {{url}}
+  Company:    {{company}}
+  Title:      {{title}}
+
+  Prior evaluation summary (for context — do not re-score):
+    Grade:               {{prior_grade}}
+    Compatibility:       {{prior_compatibility}}/100
+    Consideration:       {{prior_consideration}}/100
+    Work authorization:  {{prior_work_authorization}}
+    Rationale:           {{prior_rationale}}
+
+  The user clicked Generate after seeing this. Treat any
+  work-authorization concerns as already acknowledged: surface them in
+  the variant's notes.md under Risks, but do NOT block.
+
+  Cover letter flag:
+    include_cover_letter = {{include_cover_letter}}
+
+  Steps:
+    1. Invoke the `resume-tailoring` skill. Produce a variant folder
+       under {{vault_jobs}}/<slug>/ containing variant.yaml and notes.md,
+       then render the PDF with
+       `make build-job JOB={{vault_jobs}}/<slug>/variant.yaml`.
+
+       Pick a short kebab-case slug from the company + role. Reuse an
+       existing slug only if it points to the same role at the same
+       company.
+
+    2. If include_cover_letter is true: invoke the `cover-letter-writing`
+       skill. Produce {{vault_jobs}}/<slug>/cover-letter.yaml (same slug
+       as the resume), then render with
+       `make build-cover-job JOB={{vault_jobs}}/<slug>/cover-letter.yaml`.
+
+       If include_cover_letter is false: do NOT invoke
+       `cover-letter-writing`. Do NOT produce any cover letter artifact.
+
+    3. The RESULT line is MANDATORY on success. On the VERY LAST LINE of
+       your response — nothing after it, not even a blank line — output
+       exactly one line beginning with "RESULT:" followed by a
+       single-line JSON object with these fields:
+         - pdf_path:               absolute path to the rendered resume
+                                   PDF. Required and non-null.
+         - cover_letter_pdf_path:  absolute path to the rendered cover
+                                   letter PDF when include_cover_letter
+                                   is true; otherwise null.
+         - variant_dir:            absolute path to {{vault_jobs}}/<slug>/.
+         - variant_used:           the slug you picked.
+
+       If you cannot produce a resume PDF for any reason, do NOT emit a
+       RESULT line. Do NOT fall back to a static variant. Explain the
+       failure in your narrative output — the bridge will record the run
+       as failed and the user can retry.
+
+  Example final line (must be the last line, nothing after it):
+    RESULT: {"pdf_path": "{{vault_jobs}}/acme-platform-eng/resume.pdf", "cover_letter_pdf_path": "{{vault_jobs}}/acme-platform-eng/cover-letter.pdf", "variant_dir": "{{vault_jobs}}/acme-platform-eng", "variant_used": "acme-platform-eng"}
+
+  Job description follows between the fences:
+  ---BEGIN JD---
+  {{jd}}
+  ---END JD---
