@@ -22,3 +22,7 @@ jobs/generated/
 .envrc
 build/
 dist/
+
+# >>> agentsync >>>
+# OUTPUT_TRACKING=all — generated output is committed
+# <<< agentsync <<<

@@ -1,0 +1,5 @@
+# Codex configuration for tailord
+# Fragments under codex/configs/ are concatenated into .codex/config.toml on sync.
+
+# Codex model for tailord.
+model = "gpt-5.5"
